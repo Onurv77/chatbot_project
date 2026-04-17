@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Genel Zemin ── */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: #F5F3EE;
+    font-family: 'DM Sans', sans-serif;
+}
+
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stToolbar"] { display: none; }
+footer { display: none; }
+
+/* ── Başlık Alanı ── */
+.hero {
+    text-align: center;
+    padding: 2.5rem 1rem 1rem;
+}
+.hero-badge {
+    display: inline-block;
+    background: #1A1A2E;
+    color: #C9A84C;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem;
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+}
+.hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    color: #1A1A2E;
+    line-height: 1.15;
+    margin: 0 0 0.6rem;
+}
+.hero-title em {
+    font-style: italic;
+    color: #C9A84C;
+}
+.hero-sub {
+    font-size: 0.95rem;
+    color: #6B6B7B;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* ── Durum Kartı ── */
+.status-card {
+    background: #1A1A2E;
+    border-radius: 14px;
+    padding: 1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4ADE80;
+    box-shadow: 0 0 8px #4ADE80;
+    flex-shrink: 0;
+}
+.status-dot.loading {
+    background: #C9A84C;
+    box-shadow: 0 0 8px #C9A84C;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+.status-text { color: #E8E8F0; font-size: 0.88rem; font-weight: 400; }
+.status-text strong { color: #C9A84C; font-weight: 600; }
+
+/* ── Hızlı Sorular ── */
+.quick-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9A9AAB;
+    margin: 1.6rem 0 0.7rem;
+}
+
+/* ── Butonlar ── */
+.stButton > button {
+    background: #FFFFFF !important;
+    color: #1A1A2E !important;
+    border: 1.5px solid #E2DED6 !important;
+    border-radius: 10px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 400 !important;
+    padding: 0.55rem 1rem !important;
+    text-align: left !important;
+    width: 100% !important;
+    transition: all 0.18s ease !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+.stButton > button:hover {
+    border-color: #C9A84C !important;
+    color: #C9A84C !important;
+    box-shadow: 0 3px 10px rgba(201,168,76,0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ── Sohbet Balonları ── */
+[data-testid="stChatMessage"] {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.3rem 0 !important;
+}
+
+/* ── Chat Input ── */
+[data-testid="stChatInputContainer"] {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E2DED6 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07) !important;
+    padding: 0.1rem 0.5rem !important;
+}
+[data-testid="stChatInputContainer"]:focus-within {
+    border-color: #C9A84C !important;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.12) !important;
+}
+[data-testid="stChatInputContainer"] textarea {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.92rem !important;
+    color: #1A1A2E !important;
+}
+
+/* ── Bölücü ── */
+.divider {
+    border: none;
+    border-top: 1.5px solid #E8E4DC;
+    margin: 1.5rem 0;
+}
+
+/* ── Footer ── */
+.footer-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #B0AEBB;
+    margin-top: 1.5rem;
+    padding-bottom: 1rem;
+}
