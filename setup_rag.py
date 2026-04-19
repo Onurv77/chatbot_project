@@ -1,9 +1,3 @@
-"""
-setup_rag.py — Tek seferlik çalıştır.
-PDF'leri parçalar, Gemini embedding ile vektöre çevirir, embeddings.pkl olarak kaydeder.
-Bu dosyayı GitHub'a commit etmeyi unutma!
-"""
-
 import os
 import time
 import pickle
@@ -12,20 +6,20 @@ from pathlib import Path
 from pypdf import PdfReader
 from google import genai
 
-# ── Ayarlar ──────────────────────────────────────────────────────────────────
+
 DATA_FOLDER   = "Data"
 OUTPUT_FILE   = "embeddings.pkl"
-CHUNK_SIZE    = 800    # karakter — çok büyük olursa embedding kalitesi düşer
-CHUNK_OVERLAP = 150    # parçalar arası örtüşme — bağlam sürekliliği için
+CHUNK_SIZE    = 800    
+CHUNK_OVERLAP = 150    
 
-# ── İstemci ──────────────────────────────────────────────────────────────────
+
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
-    raise SystemExit("❌ GEMINI_API_KEY ortam değişkeni tanımlı değil.")
+    raise SystemExit("GEMINI_API_KEY ortam değişkeni tanımlı değil.")
 
 client = genai.Client(api_key=api_key)
 
-# ── Yardımcılar ───────────────────────────────────────────────────────────────
+
 def extract_text(pdf_path: str) -> str:
     reader = PdfReader(pdf_path)
     return "\n".join(
@@ -62,23 +56,23 @@ def embed_batch(texts: list[str], retries=4, wait=20) -> list[list[float]]:
             else:
                 raise
 
-# ── Ana Akış ─────────────────────────────────────────────────────────────────
+
 pdf_files = sorted(Path(DATA_FOLDER).glob("*.pdf"))
-print(f"📁 {len(pdf_files)} PDF bulundu.\n")
+print(f" {len(pdf_files)} PDF bulundu.\n")
 
 all_chunks: list[dict] = []
 
-# 1. PDF → metin → parça
+
 for pdf_path in pdf_files:
     print(f"  📄 Parçalanıyor: {pdf_path.name}")
     text   = extract_text(str(pdf_path))
     chunks = chunk_text(text, source=pdf_path.name)
     all_chunks.extend(chunks)
 
-print(f"\n✅ Toplam {len(all_chunks)} parça oluşturuldu.")
-print("🔢 Embedding oluşturuluyor...\n")
+print(f"\nToplam {len(all_chunks)} parça oluşturuldu.")
+print("Embedding oluşturuluyor...\n")
 
-# 2. Parçalar → embedding (20'li batch'ler)
+
 BATCH = 20
 vectors: list[list[float]] = []
 
@@ -87,21 +81,17 @@ for i in range(0, len(all_chunks), BATCH):
     batch_vecs  = embed_batch(batch_texts)
     vectors.extend(batch_vecs)
     print(f"   {min(i + BATCH, len(all_chunks))}/{len(all_chunks)} parça işlendi...", end="\r")
-    time.sleep(1)  # rate limit için
+    time.sleep(1)  
 
-print(f"\n✅ {len(vectors)} embedding oluşturuldu.")
+print(f"\n {len(vectors)} embedding oluşturuldu.")
 
-# 3. Kaydet
+
 data = {
-    "chunks":  all_chunks,                      # [{"text": ..., "source": ...}]
-    "vectors": np.array(vectors, dtype="float32"),  # (N, 768)
+    "chunks":  all_chunks,                      
+    "vectors": np.array(vectors, dtype="float32"),  
 }
 
 with open(OUTPUT_FILE, "wb") as f:
     pickle.dump(data, f)
 
-print(f"\n🎉 Kaydedildi: {OUTPUT_FILE}  ({Path(OUTPUT_FILE).stat().st_size // 1024} KB)")
-print("\n⚠️  Bu dosyayı GitHub'a commit etmeyi unutma:")
-print("   git add embeddings.pkl")
-print("   git commit -m 'RAG embeddings eklendi'")
-print("   git push")
+print(f"\nKaydedildi: {OUTPUT_FILE}  ({Path(OUTPUT_FILE).stat().st_size // 1024} KB)")
