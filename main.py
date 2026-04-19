@@ -1,3 +1,4 @@
+# .gitignore
 import os
 import time
 from google import genai
