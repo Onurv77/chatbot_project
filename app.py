@@ -122,7 +122,7 @@ if not st.session_state.system_ready:
 
         
         chat_session = client.chats.create(
-            model="gemini-3-flash-preview",
+            model="gemini-2.5-flash",
             config={
                 "system_instruction": (
                     "Sen Yeditepe Üniversitesi'nin resmi rehber asistanısın.\n\n"
