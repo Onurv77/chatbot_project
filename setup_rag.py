@@ -38,7 +38,7 @@ def chunk_text(text: str, source: str) -> list[dict]:
     return chunks
 
 def embed_batch(texts: list[str], retries=4, wait=20) -> list[list[float]]:
-    """Gemini embedding-004 ile toplu embedding üret."""
+    
     for attempt in range(retries):
         try:
             result = client.models.embed_content(
