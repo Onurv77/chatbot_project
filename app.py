@@ -30,7 +30,7 @@ QUICK_QUESTIONS = [
     ("🎓", "Çift anadal veya yandal başvurusu nasıl yapılır?"),
 ]
 
-TOP_K = 5  
+TOP_K = 5
 
 
 defaults = {
@@ -68,27 +68,13 @@ def retrieve(query: str, top_k: int = TOP_K) -> str:
     return "\n\n---\n\n".join(parts)
 
 
-def send_with_retry(chat, prompt, max_retries=4, wait=25):
-    for attempt in range(max_retries):
-        try:
-            return chat.send_message(prompt)
-        except Exception as e:
-            msg = str(e)
-            if attempt < max_retries - 1 and any(
-                c in msg for c in ["503", "429", "UNAVAILABLE", "EXHAUSTED"]
-            ):
-                time.sleep(wait)
-            else:
-                raise
-
-
 st.markdown("""
-            <div class="hero">
-    <img src="https://yeditepe.edu.tr/themes/custom/yeditepe/logo.svg" alt="Yeditepe Logo" class="hero-logo">    
-    <!--<div class="hero-badge">Yeditepe University</div>-->
+<div class="hero">
+    <img src="https://yeditepe.edu.tr/themes/custom/yeditepe/logo.svg" alt="Yeditepe Logo" class="hero-logo">
     <h1 class="hero-title">Student <em>Assistant</em></h1>
-    <p class="hero-sub">Get instant answers about regulations, schedules, and scholarships.</p></div>
-    """, unsafe_allow_html=True)
+    <p class="hero-sub">Get instant answers about regulations, schedules, and scholarships.</p>
+</div>
+""", unsafe_allow_html=True)
 
 
 if not st.session_state.system_ready:
@@ -109,7 +95,6 @@ if not st.session_state.system_ready:
         client = genai.Client(api_key=api_key)
         st.session_state.client = client
 
-        
         if not os.path.exists("embeddings.pkl"):
             st.error("embeddings.pkl not found.")
             st.stop()
@@ -120,9 +105,8 @@ if not st.session_state.system_ready:
         st.session_state.rag_chunks  = data["chunks"]
         st.session_state.rag_vectors = data["vectors"]
 
-        
         chat_session = client.chats.create(
-            model=os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview"), #gemini-3-flash-preview gemini-3.1-flash-lite-preview gemini-2.5-flash
+            model=os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview"),
             config={
                 "system_instruction": (
                     "Sen Yeditepe Üniversitesi'nin resmi rehber asistanısın.\n\n"
@@ -148,14 +132,13 @@ if not st.session_state.system_ready:
         st.error(f"An error occurred while starting the system: {e}")
         st.stop()
 
-
 else:
     chunk_count = len(st.session_state.rag_chunks)
     st.markdown(f"""
     <div class="status-card">
         <div class="status-dot"></div>
         <div class="status-text">The system is ready —
-        <strong>{chunk_count} The document fragment</strong> has been indexed.</div>
+        <strong>{chunk_count} document fragments</strong> indexed.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -196,12 +179,12 @@ def handle_message(user_message: str):
 
     with st.chat_message("assistant"):
         placeholder = st.empty()
-        placeholder.markdown("⏳ _The documents are being scanned…_")
+        placeholder.markdown("💭 _Thinking…_")
         try:
             context = retrieve(user_message)
-            prompt_text  = f"[BAĞLAM]\n{context}\n\n[SORU]\n{user_message}"
-            response = send_with_retry(st.session_state.chat, prompt_text)
-            answer   = response.text
+            prompt_text = f"[BAĞLAM]\n{context}\n\n[SORU]\n{user_message}"
+            response = st.session_state.chat.send_message(prompt_text)
+            answer = response.text
             placeholder.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
         except Exception as e:
@@ -210,7 +193,7 @@ def handle_message(user_message: str):
 
 if st.session_state.pending_question and st.session_state.system_ready:
     q = st.session_state.pending_question
-    st.session_state.pending_question = None  
+    st.session_state.pending_question = None
     handle_message(q)
 
 
