@@ -6,10 +6,66 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'DM Sans', sans-serif;
 }
 
-[data-testid="stHeader"] { background: transparent; }
-[data-testid="stToolbar"] { display: none; }
-footer { display: none; }
 
+
+/* Sidebar yalnızca açık olduğunda (aria-hidden="false") görünsün,
+   kapalıyken Streamlit’in kendi mekaniğine karışma */
+[data-testid="stSidebar"][aria-hidden="false"] {
+    background-color: #1A1A2E !important;
+    /* istersen lacivert tonunu azalt: #2D2D44 gibi daha açık yap */
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] a[data-testid="baseLinkButton-secondary"] {
+    background: rgba(255,255,255,0.08) !important;
+    color: #E8E8F0 !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    backdrop-filter: blur(4px);
+}
+
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] a[data-testid="baseLinkButton-secondary"]:hover {
+    background: rgba(201,168,76,0.12) !important;
+    border-color: #C9A84C !important;
+    color: #C9A84C !important;
+}
+[data-testid="stSidebar"] .stMarkdown p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+[data-testid="stSidebar"] h3 {
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    margin-top: 1.2rem;
+}
+
+[data-testid="stSidebar"] [data-testid="stImage"] {
+    margin-top: 0.8rem;
+}
+
+[data-testid="stSidebarCollapsedControl"] svg {
+    color: #E8E8F0 !important;
+}
+
+/* Sidebar içindeki yazı renkleri */
+[data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown h1,
+[data-testid="stSidebar"] .stMarkdown h2,
+[data-testid="stSidebar"] .stMarkdown h3,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] caption {
+    color: #E8E8F0 !important;
+}
+
+/* Sidebar kapalıyken lacivert zemin görünmesin diye varsayılan arka planı da şeffaf bırakabilirsin */
+[data-testid="stSidebar"][aria-hidden="true"] {
+    background-color: transparent !important;
+}
+[data-testid="stSidebar"][aria-hidden="false"] {
+    border-right: 2px solid #C9A84C !important;
+}
 /* ── Başlık Alanı ── */
 .hero {
     text-align: center;
@@ -165,3 +221,4 @@ a.header-anchor {
     margin-top: 1.5rem;
     padding-bottom: 1rem;
 }
+
