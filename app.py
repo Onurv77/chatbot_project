@@ -284,6 +284,8 @@ if not st.session_state.system_ready:
                     "akademik bilgiye BAŞVURMA. Hiçbir form, yönetmelik veya prosedür bilgisi verme. "
                     "Sadece empatiyle yanıt ver ve Yeditepe Psikolojik Danışmanlık Merkezi ile "
                     "182 ruh sağlığı hattını yönlendir."
+                    "7. BELGE ADI KULLANMA: Özellikle istenmedikçe 'kayit_dondurma_dilekcesi.pdf' gibi dosya "
+                    "isimlerini cevabında kullanma. Onun yerine 'kayıt dondurma dilekçesi' gibi tanımlayıcı ifadelerle yetin.\n"
                 )
             },
         )
