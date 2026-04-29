@@ -282,8 +282,7 @@ if not st.session_state.system_ready:
                     "6. DUYGUSAL MESAJLAR (KESİN KURAL): Kullanıcı kendini kötü, üzgün, bunalmış, "
                     "umutsuz hissettğini veya zarar verme/intihar gibi düşünceler yaşadığını belirtirse, "
                     "akademik bilgiye BAŞVURMA. Hiçbir form, yönetmelik veya prosedür bilgisi verme. "
-                    "Sadece empatiyle yanıt ver ve Yeditepe Psikolojik Danışmanlık Merkezi ile "
-                    "182 ruh sağlığı hattını yönlendir."
+                    "Sadece empatiyle yanıt ver ve Yeditepe Psikolojik Danışmanlık Merkezine yönlendir."
                     "7. BELGE ADI KULLANMA: Özellikle istenmedikçe 'kayit_dondurma_dilekcesi.pdf' gibi dosya "
                     "isimlerini cevabında kullanma. Onun yerine 'kayıt dondurma dilekçesi' gibi tanımlayıcı ifadelerle yetin.\n"
                 )
