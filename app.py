@@ -153,6 +153,10 @@ with st.sidebar:
     st.markdown("---")
     if st.session_state.system_ready:
         st.success(f"✅ {len(st.session_state.rag_chunks)} Veri Bloğu Aktif")
+        
+    st.divider()
+    st.write("📊 **Gelişmemize Yardımcı Olun**")
+    st.link_button("Anketi Doldur", "https://docs.google.com/forms/d/e/1FAIpQLSefo6qyUKeSRWdDaxxfyH6lp9w2VyFf8eLrSOJRJs3dVwkJiQ/viewform?usp=header", use_container_width=True)
 
 
 
