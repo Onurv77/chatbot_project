@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import os
 #import time
 import pickle
@@ -123,6 +124,7 @@ defaults = {
     "rag_chunks": None,
     "rag_vectors": None,
     "pending_question": None,
+    "scroll_trigger": False,
 }
 for key, val in defaults.items():
     if key not in st.session_state:
@@ -201,7 +203,7 @@ def _display_name(filename: str) -> str:
     return os.path.splitext(filename)[0].replace("_", " ").replace("-", " ").title()
 
 
-def _render_source_buttons(sources: list[str]) -> None:
+def _render_source_buttons(sources: list[str], unique_id: str) -> None:
     if not sources:
         return
     st.markdown("---")
@@ -216,7 +218,7 @@ def _render_source_buttons(sources: list[str]) -> None:
                 data=pdf_bytes,
                 file_name=source,
                 mime="application/pdf",
-                key=f"dl_{source}_{abs(hash(source + str(sources)))}",
+                key=f"dl_{source}_{unique_id}",
             )
         except OSError:
             pass
@@ -310,11 +312,26 @@ else:
 
 
 
-for message in st.session_state.messages:
+
+for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        if message["role"] == "assistant" and message.get("sources"):
-            _render_source_buttons(message["sources"])
+        
+        if message.get("is_error"):
+            st.error(message["content"])
+        else:
+            st.markdown(message["content"])
+            if message["role"] == "assistant" and message.get("sources"):            
+                _render_source_buttons(message["sources"], unique_id=f"hist_{i}")
+        
+        is_last = (i == len(st.session_state.messages) - 1)
+        if is_last and message["role"] == "assistant":
+           
+            if st.button("🔄", key=f"regen_btn_{i}", help="Yeniden Üret / Tekrar Dene"):
+                retry_question = st.session_state.messages[i-1]["content"]
+                st.session_state.messages = st.session_state.messages[:i-1]
+                st.session_state.pending_question = retry_question
+                st.session_state.scroll_trigger = True
+                st.rerun()
 
 
 
@@ -323,6 +340,7 @@ prompt = st.chat_input("Write your question…")
 if prompt:
     if st.session_state.system_ready:
         st.session_state.pending_question = prompt
+        st.session_state.scroll_trigger = True
     else:
         st.warning("The system is not yet ready, please wait.")
 
@@ -358,9 +376,9 @@ def handle_message(user_message: str) -> None:
                 "content": EMOTIONAL_RESPONSE,
                 "sources": [],
             })
+            st.rerun() 
             return
 
-        
         placeholder = st.empty()
         placeholder.markdown("💭 _Thinking…_")
         try:
@@ -369,16 +387,23 @@ def handle_message(user_message: str) -> None:
             response    = st.session_state.chat.send_message(prompt_text)
             answer      = response.text
 
-            placeholder.markdown(answer)
-            _render_source_buttons(sources)
+            placeholder.markdown(answer)            
+            
 
             st.session_state.messages.append({
                 "role":    "assistant",
                 "content": answer,
                 "sources": sources,
             })
+            st.rerun() 
+            
         except Exception as e:
-            placeholder.error(f"Error: {e}")
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": f"Bağlantı veya API hatası oluştu: {e}",
+                "is_error": True
+            })
+            st.rerun() 
 
 
 
@@ -417,3 +442,25 @@ st.markdown(
     "with student affairs.</div>",
     unsafe_allow_html=True,
 )
+
+
+
+st.markdown("<div id='chat-end' style='height: 10px;'></div>", unsafe_allow_html=True)
+
+if st.session_state.scroll_trigger:
+    scroll_js = """
+    <script>
+        
+        setTimeout(function() {
+            const parentDoc = window.parent.document;            
+            
+            const target = parentDoc.getElementById('chat-end');            
+            
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+        }, 300); 
+    </script>
+    """
+    components.html(scroll_js, height=0)   
+    st.session_state.scroll_trigger = False
